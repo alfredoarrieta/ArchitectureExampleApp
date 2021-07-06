@@ -7,7 +7,6 @@ import androidx.fragment.app.commit
 
 import com.example.myapplication.R
 import com.example.myapplication.animations.AnimationsProvider
-import com.example.myapplication.mvvm.viemodels.MVVMViewModel
 import com.example.myapplication.redux.fragments.ReduxAboutFragment
 import com.example.myapplication.redux.fragments.ReduxCartFragment
 import com.example.myapplication.redux.fragments.ReduxStoreFragment
@@ -15,7 +14,7 @@ import com.example.myapplication.redux.implementation.AppStore
 import com.example.myapplication.redux.implementation.FragmentType
 import com.example.myapplication.redux.implementation.actions.CartActions
 import com.example.myapplication.redux.implementation.actions.NavigationActions
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main_manual_management.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -28,13 +27,11 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_manual_management)
 
         supportActionBar?.title = "Redux Store"
 
         appStore.dispatch(CartActions.RestoreProductsFromCache())
-
-        mainContainer.removeAllViews()
 
         supportFragmentManager.commit {
             add(R.id.mainContainer, storeFragment)
@@ -52,11 +49,11 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
             }
         }
 
-        tabBar.setOnNavigationItemSelectedListener { item ->
+        tabBar.setOnItemSelectedListener { item ->
             when(item.itemId){
-                R.id.store -> goToStore()
-                R.id.cart -> goToCart()
-                R.id.about -> goToAbout()
+                R.id.store_redux -> goToStore()
+                R.id.cart_redux -> goToCart()
+                R.id.about_redux -> goToAbout()
                 else -> false
             }
         }
@@ -76,7 +73,7 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
 
     private fun exitAnimationAndClose() {
         if(appStore.getState().navigationState.lastFragment != FragmentType.STORE) {
-            tabBar.selectedItemId = R.id.store
+            tabBar.selectedItemId = R.id.store_redux
         }else {
             finish()
         }

@@ -7,21 +7,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.animations.AnimationsProvider
 import com.example.myapplication.data.model.Product
 import com.example.myapplication.mvvm.repositories.StoreRepository
+import com.example.myapplication.mvvm.viemodels.MVVMViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_store.*
 import kotlinx.android.synthetic.main.item_cart_product.view.image
 import kotlinx.android.synthetic.main.item_cart_product.view.name
 import kotlinx.android.synthetic.main.item_cart_product.view.price
 import kotlinx.android.synthetic.main.item_store_product.view.*
+import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class MVVMStoreFragment : MVVMFragment() {
+class MVVMStoreFragment : Fragment(), KoinComponent {
 
     private val animationsProvider: AnimationsProvider by inject()
     private val animationHandler = Handler(Looper.getMainLooper())
@@ -33,23 +37,25 @@ class MVVMStoreFragment : MVVMFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainViewModel.cartTotal.observe(mainActivity, { data ->
+        val viewModel: MVVMViewModel by activityViewModels()
+
+        viewModel.cartTotal.observe(this, { data ->
             body.text = HtmlCompat.fromHtml(String.format("<b>Cart total is:</b> $%.2f",data), HtmlCompat.FROM_HTML_MODE_LEGACY)
         })
 
-        mainViewModel.getProducts(object : StoreRepository.ProductsCallback {
+        viewModel.getProducts(object : StoreRepository.ProductsCallback {
             override fun onProductsFetched(products: List<Product>) {
                 productList.layoutManager = GridLayoutManager(context, 2)
                 productList.adapter = ProductAdapter(products, object : StoreProductInterface {
                     override fun onProductAdded(product: Product) {
-                        mainViewModel.addProductToCart(product)
+                        viewModel.addProductToCart(product)
                         startSlidingViewAnimation()
                     }
                 })
             }
         })
 
-        mainViewModel.cart.observe(mainActivity, { products ->
+        viewModel.cart.observe(this, { products ->
             (productList.adapter as ProductAdapter).updateProducts(products)
             productList.adapter?.notifyDataSetChanged()
         })
@@ -60,7 +66,7 @@ class MVVMStoreFragment : MVVMFragment() {
     private fun startSlidingViewAnimation() {
         animationsProvider.startLeftSlidingViewAnimation(slidingView)
         animationHandler.removeCallbacksAndMessages(null)
-        animationHandler.postDelayed({ animationsProvider.finishLeftSlidingViewAnimation(slidingView) },3000)
+        animationHandler.postDelayed({ slidingView?.let{ animationsProvider.finishLeftSlidingViewAnimation(slidingView) } },3000)
     }
 }
 

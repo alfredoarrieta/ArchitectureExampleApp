@@ -6,15 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
 import com.example.myapplication.R
-import com.example.myapplication.animations.AnimationsProvider
 import kotlinx.android.synthetic.main.fragment_about.*
-import org.koin.core.component.inject
 
-class MVVMAboutFragment : MVVMFragment() {
-
-    private val animationsProvider: AnimationsProvider by inject()
-    private var entryAnimationPresented = false
+class MVVMAboutFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_about, container, false)
@@ -34,21 +30,5 @@ class MVVMAboutFragment : MVVMFragment() {
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         aboutText.movementMethod = LinkMovementMethod.getInstance()
-    }
-
-    fun entryAnimation(){
-        if(entryAnimationPresented.not()){
-            mainContainer?.post { animationsProvider.entryRightAnimation(mainContainer) }
-            entryAnimationPresented = true
-        }
-    }
-
-    fun exitAnimation(callback: AnimationsProvider.AnimationEndCallback? = null){
-        if(entryAnimationPresented) {
-            mainContainer?.post { animationsProvider.exitRightAnimation(mainContainer,callback) }
-            entryAnimationPresented = false
-        } else {
-            callback?.onAnimationEnd()
-        }
     }
 }

@@ -4,21 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.animations.AnimationsProvider
 import com.example.myapplication.data.model.Product
+import com.example.myapplication.mvvm.viemodels.MVVMViewModel
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_cart.*
-import kotlinx.android.synthetic.main.fragment_cart.mainContainer
 import kotlinx.android.synthetic.main.item_cart_product.view.*
-import org.koin.core.component.inject
 
-class MVVMCartFragment : MVVMFragment() {
-
-    private val animationsProvider: AnimationsProvider by inject()
-    private var entryAnimationPresented = false
+class MVVMCartFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_cart,container,false)
@@ -27,36 +24,22 @@ class MVVMCartFragment : MVVMFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainViewModel.cartTotal.observe(mainActivity, { data ->
+        val viewModel: MVVMViewModel by activityViewModels()
+
+        viewModel.cartTotal.observe(this, { data ->
             checkoutButton.text = String.format("Cart Total $%.2f",data)
         })
 
         productList.layoutManager = LinearLayoutManager(context)
         productList.adapter = CartProductAdapter(object : CartProductInterface {
             override fun onProductDeleted(product: Product) {
-                mainViewModel.removeProductFromCart(product)
+                viewModel.removeProductFromCart(product)
             }
         })
 
-        mainViewModel.cart.observe(mainActivity, { cartProducts ->
+        viewModel.cart.observe(this, { cartProducts ->
             (productList.adapter as CartProductAdapter).setProducts(cartProducts)
         })
-    }
-
-    fun entryAnimation(){
-        if(entryAnimationPresented.not()){
-            mainContainer?.post { animationsProvider.entryBottomAnimation(mainContainer) }
-            entryAnimationPresented = true
-        }
-    }
-
-    fun exitAnimation(callback: AnimationsProvider.AnimationEndCallback){
-        if(entryAnimationPresented) {
-            mainContainer?.post { animationsProvider.exitBottomAnimation(mainContainer,callback) }
-            entryAnimationPresented = false
-        } else {
-            callback.onAnimationEnd()
-        }
     }
 }
 

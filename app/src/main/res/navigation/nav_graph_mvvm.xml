@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_mvvm">
+
+    <fragment
+        android:id="@+id/store_mvvm"
+        android:name="com.example.myapplication.mvvm.fragments.MVVMStoreFragment"
+        android:label="fragment_store_mvvm"
+        tools:layout="@layout/fragment_store" />
+
+    <fragment
+        android:id="@+id/cart_mvvm"
+        android:name="com.example.myapplication.mvvm.fragments.MVVMCartFragment"
+        android:label="fragment_cart_mvvm"
+        tools:layout="@layout/fragment_cart" />
+
+    <fragment
+        android:id="@+id/about_mvvm"
+        android:name="com.example.myapplication.mvvm.fragments.MVVMAboutFragment"
+        android:label="fragment_about_mvvm"
+        tools:layout="@layout/fragment_about" />
+</navigation>
