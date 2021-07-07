@@ -14,24 +14,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.animations.AnimationsProvider
 import com.example.myapplication.data.model.Product
+import com.example.myapplication.databinding.FragmentStoreBinding
+import com.example.myapplication.databinding.ItemStoreProductBinding
 import com.example.myapplication.mvvm.repositories.StoreRepository
 import com.example.myapplication.mvvm.viemodels.MVVMViewModel
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_store.*
-import kotlinx.android.synthetic.main.item_cart_product.view.image
-import kotlinx.android.synthetic.main.item_cart_product.view.name
-import kotlinx.android.synthetic.main.item_cart_product.view.price
-import kotlinx.android.synthetic.main.item_store_product.view.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class MVVMStoreFragment : Fragment(), KoinComponent {
 
+    private lateinit var binding: FragmentStoreBinding
     private val animationsProvider: AnimationsProvider by inject()
     private val animationHandler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_store, container, false)
+        binding = FragmentStoreBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,13 +39,13 @@ class MVVMStoreFragment : Fragment(), KoinComponent {
         val viewModel: MVVMViewModel by activityViewModels()
 
         viewModel.cartTotal.observe(this, { data ->
-            body.text = HtmlCompat.fromHtml(String.format("<b>Cart total is:</b> $%.2f",data), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.body.text = HtmlCompat.fromHtml(String.format("<b>Cart total is:</b> $%.2f",data), HtmlCompat.FROM_HTML_MODE_LEGACY)
         })
 
         viewModel.getProducts(object : StoreRepository.ProductsCallback {
             override fun onProductsFetched(products: List<Product>) {
-                productList.layoutManager = GridLayoutManager(context, 2)
-                productList.adapter = ProductAdapter(products, object : StoreProductInterface {
+                binding.productList.layoutManager = GridLayoutManager(context, 2)
+                binding.productList.adapter = ProductAdapter(products, object : StoreProductInterface {
                     override fun onProductAdded(product: Product) {
                         viewModel.addProductToCart(product)
                         startSlidingViewAnimation()
@@ -56,17 +55,17 @@ class MVVMStoreFragment : Fragment(), KoinComponent {
         })
 
         viewModel.cart.observe(this, { products ->
-            (productList.adapter as ProductAdapter).updateProducts(products)
-            productList.adapter?.notifyDataSetChanged()
+            (binding.productList.adapter as ProductAdapter).updateProducts(products)
+            binding.productList.adapter?.notifyDataSetChanged()
         })
 
-        slidingView.post { slidingView.translationX = slidingView.width.toFloat() }
+        binding.slidingView.post { binding.slidingView.translationX = binding.slidingView.width.toFloat() }
     }
 
     private fun startSlidingViewAnimation() {
-        animationsProvider.startLeftSlidingViewAnimation(slidingView)
+        animationsProvider.startLeftSlidingViewAnimation(binding.slidingView)
         animationHandler.removeCallbacksAndMessages(null)
-        animationHandler.postDelayed({ slidingView?.let{ animationsProvider.finishLeftSlidingViewAnimation(slidingView) } },3000)
+        animationHandler.postDelayed({ binding.slidingView?.let{ animationsProvider.finishLeftSlidingViewAnimation(binding.slidingView) } },3000)
     }
 }
 
@@ -74,19 +73,19 @@ interface StoreProductInterface{
     fun onProductAdded(product: Product)
 }
 
-class ProductViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
+class ProductViewHolder(private val binding: ItemStoreProductBinding): RecyclerView.ViewHolder(binding.root) {
     fun bind(product: Product, callback: StoreProductInterface){
-        Picasso.get().load(product.image).resize(100,120).placeholder(R.drawable.ic_android).into(view.image)
-        view.name.text = product.name
-        view.price.text = "$${product.price}"
-        view.addButton.text = if(product.amount == 0) "Add" else product.amount.toString()
-        view.addButton.setOnClickListener { callback.onProductAdded(product) }
+        Picasso.get().load(product.image).resize(100,120).placeholder(R.drawable.ic_android).into(binding.image)
+        binding.name.text = product.name
+        binding.price.text = "$${product.price}"
+        binding.addButton.text = if(product.amount == 0) "Add" else product.amount.toString()
+        binding.addButton.setOnClickListener { callback.onProductAdded(product) }
     }
 }
 
 class ProductAdapter(private var products: List<Product>, private val callback: StoreProductInterface) : RecyclerView.Adapter<ProductViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        return ProductViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_store_product, parent, false))
+        return ProductViewHolder(ItemStoreProductBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {

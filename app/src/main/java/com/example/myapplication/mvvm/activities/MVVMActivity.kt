@@ -6,19 +6,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import com.example.myapplication.R
+import com.example.myapplication.databinding.ActivityMainNavComponentBinding
 import com.example.myapplication.mvvm.viemodels.MVVMViewModel
-import kotlinx.android.synthetic.main.activity_main_nav_component.*
-
 
 class MVVMActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_nav_component)
+
+        val binding = ActivityMainNavComponentBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         supportActionBar?.title = "MVVM Store"
 
-        tabBar.inflateMenu(R.menu.tabbar_menu_mvvm)
+        binding.tabBar.inflateMenu(R.menu.tabbar_menu_mvvm)
 
         val navController = Navigation.findNavController(this, R.id.mainContainer)
         val navGraph = navController.navInflater.inflate(R.navigation.nav_graph_mvvm)
@@ -27,7 +28,7 @@ class MVVMActivity : AppCompatActivity() {
 
         val viewModel: MVVMViewModel by viewModels()
 
-        tabBar.setOnItemSelectedListener { item ->
+        binding.tabBar.setOnItemSelectedListener { item ->
             val navBuilder = NavOptions.Builder();
             when(item.itemId){
                 R.id.store_mvvm -> /*goToStore()*/ {

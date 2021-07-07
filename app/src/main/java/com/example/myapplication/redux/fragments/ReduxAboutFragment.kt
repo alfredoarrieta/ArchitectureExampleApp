@@ -6,24 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
-import com.example.myapplication.R
 import com.example.myapplication.animations.AnimationsProvider
-import kotlinx.android.synthetic.main.fragment_about.*
+import com.example.myapplication.databinding.FragmentAboutBinding
 import org.koin.core.component.inject
 
 class ReduxAboutFragment : ReduxFragment() {
 
+    private lateinit var binding: FragmentAboutBinding
     private val animationsProvider: AnimationsProvider by inject()
     private var entryAnimationPresented = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_about, container, false)
+        binding = FragmentAboutBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        aboutText.text = HtmlCompat.fromHtml(" <h1>Hello and Welcome</h1>" +
+        binding.aboutText.text = HtmlCompat.fromHtml(" <h1>Hello and Welcome</h1>" +
                 "<p>This is a <b>Store</b> built using <b>Redux</b> architecture, " +
                 "this architecture uses:</p> <b>State</b> to store the app information " +
                 "<br><b>Reducers</b> to execute any change in the State </br>" +
@@ -35,19 +36,19 @@ class ReduxAboutFragment : ReduxFragment() {
                 "<br><a href=\"https://www.linkedin.com/in/alfredo-josé-arrieta-bawab-85908996/\">linkedIn</br>",
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
-        aboutText.movementMethod = LinkMovementMethod.getInstance()
+        binding.aboutText.movementMethod = LinkMovementMethod.getInstance()
     }
 
     fun entryAnimation(){
         if(entryAnimationPresented.not()){
-            mainContainer?.post { animationsProvider.entryRightAnimation(mainContainer) }
+            binding.mainContainer.post { animationsProvider.entryRightAnimation(binding.mainContainer) }
             entryAnimationPresented = true
         }
     }
 
     fun exitAnimation(callback: AnimationsProvider.AnimationEndCallback? = null){
         if(entryAnimationPresented) {
-            mainContainer?.post { animationsProvider.exitRightAnimation(mainContainer,callback) }
+            binding.mainContainer.post { animationsProvider.exitRightAnimation(binding.mainContainer,callback) }
             entryAnimationPresented = false
         } else {
             callback?.onAnimationEnd()

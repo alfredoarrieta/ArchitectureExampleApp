@@ -7,6 +7,7 @@ import androidx.fragment.app.commit
 
 import com.example.myapplication.R
 import com.example.myapplication.animations.AnimationsProvider
+import com.example.myapplication.databinding.ActivityMainManualManagementBinding
 import com.example.myapplication.redux.fragments.ReduxAboutFragment
 import com.example.myapplication.redux.fragments.ReduxCartFragment
 import com.example.myapplication.redux.fragments.ReduxStoreFragment
@@ -14,20 +15,22 @@ import com.example.myapplication.redux.implementation.AppStore
 import com.example.myapplication.redux.implementation.FragmentType
 import com.example.myapplication.redux.implementation.actions.CartActions
 import com.example.myapplication.redux.implementation.actions.NavigationActions
-import kotlinx.android.synthetic.main.activity_main_manual_management.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class ReduxActivity : AppCompatActivity(), KoinComponent {
 
     val appStore: AppStore by inject()
+    private lateinit var binding: ActivityMainManualManagementBinding
     private val storeFragment = ReduxStoreFragment()
     private val cartFragment = ReduxCartFragment()
     private val aboutFragment = ReduxAboutFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_manual_management)
+
+        binding = ActivityMainManualManagementBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         supportActionBar?.title = "Redux Store"
 
@@ -49,7 +52,7 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
             }
         }
 
-        tabBar.setOnItemSelectedListener { item ->
+        binding.tabBar.setOnItemSelectedListener { item ->
             when(item.itemId){
                 R.id.store_redux -> goToStore()
                 R.id.cart_redux -> goToCart()
@@ -73,7 +76,7 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
 
     private fun exitAnimationAndClose() {
         if(appStore.getState().navigationState.lastFragment != FragmentType.STORE) {
-            tabBar.selectedItemId = R.id.store_redux
+            binding.tabBar.selectedItemId = R.id.store_redux
         }else {
             finish()
         }

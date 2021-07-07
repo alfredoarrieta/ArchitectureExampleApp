@@ -5,35 +5,37 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import androidx.core.text.HtmlCompat
+import com.example.myapplication.databinding.ActivityEnteringBinding
 import com.example.myapplication.mvvm.activities.MVVMActivity
 import com.example.myapplication.redux.activities.ReduxActivity
-import kotlinx.android.synthetic.main.activity_entering.*
 
 class EnteringActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_entering)
+
+        val binding = ActivityEnteringBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         supportActionBar?.title = "Architecture Exercise"
 
-        tittle.text = HtmlCompat.fromHtml(
+        binding.tittle.text = HtmlCompat.fromHtml(
                 "This example was created by: <b>Alfredo Arrieta</b>" +
                 "<br><a href=\"https://www.linkedin.com/in/alfredo-josé-arrieta-bawab-85908996/\">linkedIn</br>",
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
-        tittle.movementMethod = LinkMovementMethod.getInstance()
+        binding.tittle.movementMethod = LinkMovementMethod.getInstance()
 
-        enterButton1.text = "Enter MVVM Store"
+        binding.enterButton1.text = "Enter MVVM Store"
 
-        enterButton1.setOnClickListener {
+        binding.enterButton1.setOnClickListener {
             Intent(this, MVVMActivity::class.java).apply {
                 startActivity(this)
             }
         }
 
-        enterButton2.text = "Enter Redux Store"
+        binding.enterButton2.text = "Enter Redux Store"
 
-        enterButton2.setOnClickListener {
+        binding.enterButton2.setOnClickListener {
             Intent(this, ReduxActivity::class.java).apply {
                 startActivity(this)
             }

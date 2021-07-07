@@ -3,7 +3,6 @@ package com.example.myapplication.animations
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.view.View
-import kotlinx.android.synthetic.main.fragment_store.*
 
 class AnimationsProvider {
 

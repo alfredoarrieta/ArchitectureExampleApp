@@ -9,46 +9,47 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.animations.AnimationsProvider
 import com.example.myapplication.data.model.Product
+import com.example.myapplication.databinding.FragmentCartBinding
+import com.example.myapplication.databinding.ItemCartProductBinding
 import com.example.myapplication.redux.implementation.actions.CartActions
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_cart.*
-import kotlinx.android.synthetic.main.fragment_cart.mainContainer
-import kotlinx.android.synthetic.main.item_cart_product.view.*
 import org.koin.core.component.inject
 
 class ReduxCartFragment : ReduxFragment() {
 
+    private lateinit var binding: FragmentCartBinding
     private val animationsProvider: AnimationsProvider by inject()
     private var entryAnimationPresented = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_cart,container,false)
+        binding = FragmentCartBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        productList.layoutManager = LinearLayoutManager(context)
-        productList.adapter = ReduxCartProductAdapter(object : ReduxCartProductInterface {
+        binding.productList.layoutManager = LinearLayoutManager(context)
+        binding.productList.adapter = ReduxCartProductAdapter(object : ReduxCartProductInterface {
             override fun onProductDeleted(product: Product) { appStore.dispatch(CartActions.RemoveProductFromCart(product)) }
         })
 
         subscriptions.add(appStore.getObservableState().subscribe{ state ->
-            checkoutButton.text = String.format("Cart Total $%.2f",state.cartState.cartTotal)
-            (productList.adapter as ReduxCartProductAdapter).setProducts(state.cartState.products)
+            binding.checkoutButton.text = String.format("Cart Total $%.2f",state.cartState.cartTotal)
+            (binding.productList.adapter as ReduxCartProductAdapter).setProducts(state.cartState.products)
         })
     }
 
     fun entryAnimation(){
         if(entryAnimationPresented.not()){
-            mainContainer?.post { animationsProvider.entryBottomAnimation(mainContainer) }
+            binding.mainContainer.post { animationsProvider.entryBottomAnimation(binding.mainContainer) }
             entryAnimationPresented = true
         }
     }
 
     fun exitAnimation(callback: AnimationsProvider.AnimationEndCallback){
         if(entryAnimationPresented) {
-            mainContainer?.post { animationsProvider.exitBottomAnimation(mainContainer,callback) }
+            binding.mainContainer.post { animationsProvider.exitBottomAnimation(binding.mainContainer,callback) }
             entryAnimationPresented = false
         } else {
             callback.onAnimationEnd()
@@ -60,14 +61,14 @@ interface ReduxCartProductInterface{
     fun onProductDeleted(product: Product)
 }
 
-class ReduxCartProductViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
+class ReduxCartProductViewHolder(private val binding: ItemCartProductBinding): RecyclerView.ViewHolder(binding.root) {
     fun bind(product: Product, callback: ReduxCartProductInterface){
-        view.amount.text = "${product.amount}x"
-        Picasso.get().load(product.image).resize(100,120).placeholder(R.drawable.ic_android).into(view.image)
-        view.name.text = product.name
-        view.price.text = "$${product.price}"
-        view.deleteButton.text = if(product.amount == 1) "Delete" else "Decrease"
-        view.deleteButton.setOnClickListener { callback.onProductDeleted(product) }
+        binding.amount.text = "${product.amount}x"
+        Picasso.get().load(product.image).resize(100,120).placeholder(R.drawable.ic_android).into(binding.image)
+        binding.name.text = product.name
+        binding.price.text = "$${product.price}"
+        binding.deleteButton.text = if(product.amount == 1) "Delete" else "Decrease"
+        binding.deleteButton.setOnClickListener { callback.onProductDeleted(product) }
     }
 }
 
@@ -76,7 +77,7 @@ class ReduxCartProductAdapter(private val callback: ReduxCartProductInterface) :
     private var products: List<Product> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReduxCartProductViewHolder {
-        return ReduxCartProductViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_cart_product, parent, false))
+        return ReduxCartProductViewHolder(ItemCartProductBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: ReduxCartProductViewHolder, position: Int) {
