@@ -2,13 +2,16 @@ package com.example.myapplication.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.data.model.Product
 import com.example.myapplication.databinding.ItemStoreProductBinding
 import com.squareup.picasso.Picasso
 
-class StoreProductAdapter(private var products: List<Product>, private val callback: StoreProductInterface) : RecyclerView.Adapter<StoreProductViewHolder>() {
+class StoreProductAdapter(private var products: List<Product>, private val callback: StoreProductInterface) :
+    ListAdapter<Product, StoreProductViewHolder>(StoreProductDifferenceCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoreProductViewHolder {
         return StoreProductViewHolder(ItemStoreProductBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
@@ -28,6 +31,16 @@ class StoreProductAdapter(private var products: List<Product>, private val callb
             }
         }
 
+    }
+}
+
+object StoreProductDifferenceCallback: DiffUtil.ItemCallback<Product>() {
+    override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
+        return oldItem == newItem
     }
 }
 

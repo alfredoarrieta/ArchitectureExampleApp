@@ -2,13 +2,15 @@ package com.example.myapplication.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.data.model.Product
 import com.example.myapplication.databinding.ItemCartProductBinding
 import com.squareup.picasso.Picasso
 
-class CartProductAdapter(private val callback: CartProductInterface) : RecyclerView.Adapter<CartProductViewHolder>() {
+class CartProductAdapter(private val callback: CartProductInterface) :
+    ListAdapter<Product, CartProductViewHolder>(StoreProductDifferenceCallback) {
 
     private lateinit var products: List<Product>
 
