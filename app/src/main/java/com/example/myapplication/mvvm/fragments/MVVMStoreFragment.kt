@@ -36,28 +36,22 @@ class MVVMStoreFragment : Fragment(), KoinComponent {
 
         val viewModel: MVVMViewModel by activityViewModels()
 
-        viewModel.cartTotal.observe(this, { data ->
-            binding.body.text = HtmlCompat.fromHtml(String.format("<b>Cart total is:</b> $%.2f",data), HtmlCompat.FROM_HTML_MODE_LEGACY)
-        })
-
-        viewModel.getProducts(object : StoreRepository.ProductsCallback {
-            override fun onProductsFetched(products: List<Product>) {
-                binding.productList.layoutManager = GridLayoutManager(context, 2)
-                binding.productList.adapter = StoreProductAdapter(products, object : StoreProductInterface {
-                    override fun onProductAdded(product: Product) {
-                        viewModel.addProductToCart(product)
-                        startSlidingViewAnimation()
-                    }
-                })
-            }
-        })
-
-        viewModel.cart.observe(this, { products ->
-            (binding.productList.adapter as StoreProductAdapter).updateProducts(products)
-            binding.productList.adapter?.notifyDataSetChanged()
+        viewModel.onDataChanged.observe(this, { data ->
+            binding.body.text = HtmlCompat.fromHtml(String.format("<b>Cart total is:</b> $%.2f",data.cartTotal), HtmlCompat.FROM_HTML_MODE_LEGACY)
+            (binding.productList.adapter as StoreProductAdapter).updateProducts(data.products, data.cart)
         })
 
         binding.slidingView.post { binding.slidingView.translationX = binding.slidingView.width.toFloat() }
+
+        binding.productList.layoutManager = GridLayoutManager(context, 2)
+        binding.productList.adapter = StoreProductAdapter(arrayListOf(), object : StoreProductInterface {
+            override fun onProductAdded(product: Product) {
+                viewModel.addProductToCart(product)
+                startSlidingViewAnimation()
+            }
+        })
+
+        viewModel.getProducts()
     }
 
     private fun startSlidingViewAnimation() {

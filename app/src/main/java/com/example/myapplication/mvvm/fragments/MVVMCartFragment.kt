@@ -27,8 +27,9 @@ class MVVMCartFragment : Fragment() {
 
         val viewModel: MVVMViewModel by activityViewModels()
 
-        viewModel.cartTotal.observe(this, { data ->
-            binding.checkoutButton.text = String.format("Cart Total $%.2f",data)
+        viewModel.onDataChanged.observe(this, { data ->
+            binding.checkoutButton.text = String.format("Cart Total $%.2f",data.cartTotal)
+            (binding.productList.adapter as CartProductAdapter).setProducts(data.cart)
         })
 
         binding.productList.layoutManager = LinearLayoutManager(context)
@@ -36,10 +37,6 @@ class MVVMCartFragment : Fragment() {
             override fun onProductDeleted(product: Product) {
                 viewModel.removeProductFromCart(product)
             }
-        })
-
-        viewModel.cart.observe(this, { cartProducts ->
-            (binding.productList.adapter as CartProductAdapter).setProducts(cartProducts)
         })
     }
 }

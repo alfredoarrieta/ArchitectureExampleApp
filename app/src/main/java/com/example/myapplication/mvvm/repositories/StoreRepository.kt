@@ -3,50 +3,51 @@ package com.example.myapplication.mvvm.repositories
 import androidx.lifecycle.MutableLiveData
 import com.example.myapplication.data.datasources.LocalDataSource
 import com.example.myapplication.data.model.Product
+import com.example.myapplication.data.model.StoreData
 
 class StoreRepository(private val localDataSource: LocalDataSource) {
 
-    val cart : MutableLiveData<List<Product>> = MutableLiveData(localDataSource.getCartProducts())
-    val cartTotal : MutableLiveData<Double> = MutableLiveData(0.0)
+    private var _products : List<Product> = arrayListOf()
+    private var _cart : List<Product> = arrayListOf()
+    private var _cartTotal : Double = 0.0
 
-    init {
-        updateTotalPrice()
-    }
+    private val storeData get() = StoreData(_products, _cart, _cartTotal)
 
-    fun addProductToCart(product: Product){
+    suspend fun addProductToCart(product: Product): StoreData {
         val newList: MutableList<Product> = mutableListOf()
-        cart.value?.let{ cartProducts -> newList.addAll(cartProducts) }
+        newList.addAll(_cart)
         newList.firstOrNull{it.id == product.id}?.increaseAmount() ?: newList.add(product.increaseAmount())
         updateCartProducts(newList)
         updateTotalPrice()
+        return storeData
     }
 
-    fun removeProductFromCart(product: Product){
+    suspend fun removeProductFromCart(product: Product): StoreData {
         val newList: MutableList<Product> = mutableListOf()
-        cart.value?.let{ cartProducts -> newList.addAll(cartProducts) }
+        newList.addAll(_cart)
         newList.firstOrNull{it.id == product.id}?.decreaseAmount()?.let {
             if (it.amount == 0){ newList.remove(it) }
         }
         updateCartProducts(newList)
         updateTotalPrice()
+        return storeData
     }
 
     private fun updateCartProducts(newList: MutableList<Product>) {
-        cart.value = newList
+        _cart = newList
         localDataSource.saveCartProducts(newList)
     }
 
     private fun updateTotalPrice() {
         var cost = 0.0
-        cart.value?.forEach { cost += it.price * it.amount }
-        cartTotal.value = cost
+        _cart.forEach { cost += it.price * it.amount }
+        _cartTotal = cost
     }
 
-    fun getProducts(callback: ProductsCallback) {
-        callback.onProductsFetched(localDataSource.getStoreProducts())
-    }
-
-    interface ProductsCallback{
-        fun onProductsFetched(products: List<Product>)
+    suspend fun getProducts(): StoreData {
+        _products = localDataSource.getStoreProducts()
+        _cart = localDataSource.getCartProducts()
+        updateTotalPrice()
+        return storeData
     }
 }

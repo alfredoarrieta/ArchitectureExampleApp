@@ -24,13 +24,18 @@ class StoreProductAdapter(private var products: List<Product>, private val callb
         return products.size
     }
 
-    fun updateProducts(products: List<Product>?) {
-        products?.forEach { cartProduct ->
-            this.products.firstOrNull { it.id == cartProduct.id }?.let{
-                it.amount = cartProduct.amount
+    fun updateProducts(products: List<Product>?, cart: List<Product>?) {
+        products?.let { products ->
+            if (this.products.isEmpty()) {
+                this.products = products
             }
+            cart?.forEach { cartProduct ->
+                this.products.firstOrNull { it.id == cartProduct.id }?.let {
+                    it.amount = cartProduct.amount
+                }
+            }
+            notifyDataSetChanged()
         }
-
     }
 }
 
@@ -40,7 +45,7 @@ object StoreProductDifferenceCallback: DiffUtil.ItemCallback<Product>() {
     }
 
     override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
-        return oldItem == newItem
+        return oldItem.amount == newItem.amount
     }
 }
 
