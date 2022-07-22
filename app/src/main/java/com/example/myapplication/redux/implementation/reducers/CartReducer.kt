@@ -23,7 +23,7 @@ class CartReducer: BaseReducer() {
     private fun addProductToCart(product: Product, state: AppState): AppState {
         val newList: MutableList<Product> = mutableListOf()
         state.cartState.products.let{ cartProducts -> newList.addAll(cartProducts) }
-        newList.firstOrNull{it.id == product.id}?.increaseAmount() ?: newList.add(product.increaseAmount())
+        newList.firstOrNull{it.id == product.id}?.increaseAmount() ?: newList.add(if(product.amount == 0) product.increaseAmount() else product)
         return state.copy(cartState = state.cartState.copy(products = newList, cartTotal = updateTotalPrice(newList)))
     }
 
