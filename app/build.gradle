@@ -40,6 +40,11 @@ android {
 }
 
 def nav_version = "2.3.5"
+def jUnitVersion = "4.13.2"
+def androidXTestVersion = "1.4.0"
+def mockitoVersion = "4.6.1"
+def mockitoKotlinVersion = "4.0.0"
+def mockkVersion = "1.12.4"
 
 dependencies {
 
@@ -79,4 +84,16 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    // Required -- JUnit 4 framework
+    testImplementation "junit:junit:$jUnitVersion"
+    // Optional -- Robolectric environment
+    testImplementation "androidx.test:core:$androidXTestVersion"
+    // Optional -- Mockito framework
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
+    // Optional -- mockito-kotlin
+    testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
+    // Optional -- Mockk framework
+    testImplementation "io.mockk:mockk:$mockkVersion"
 }
