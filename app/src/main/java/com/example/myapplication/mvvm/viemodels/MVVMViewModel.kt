@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.model.Product
 import com.example.myapplication.data.model.StoreData
 import com.example.myapplication.mvvm.repositories.StoreRepository
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
