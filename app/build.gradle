@@ -124,9 +124,18 @@ tasks.withType(Test) {
     jacoco.excludes = ['jdk.internal.*']
 }
 
-def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*',
-                  '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*', '**/fragments/*', '**/adapters/*',
-                  '**/activities/*', '**/animations/*']
+def fileFilter = [
+        '**/R.class',
+        '**/R$*.class',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        '**/*Test*.*',
+        'android/**/*.*',
+        '**/fragments/*',
+        '**/adapters/*',
+        '**/activities/*',
+        '**/animations/*'
+]
 def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
 def mainSrc = "$project.projectDir/src/main/java"
 
