@@ -133,7 +133,7 @@ def mainSrc = "$project.projectDir/src/main/java"
 task jacocoTestReport(type: JacocoReport) {
     dependsOn = ['testDebugUnitTest', 'createDebugCoverageReport']
     reports {
-        xml.enabled = false
+        xml.enabled = true
         html.enabled = true
     }
 
