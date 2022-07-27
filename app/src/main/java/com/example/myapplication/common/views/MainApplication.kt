@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.common.views
 
 import android.support.multidex.MultiDexApplication
 import com.example.myapplication.data.di.ModuleProvider

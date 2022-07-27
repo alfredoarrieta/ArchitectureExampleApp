@@ -1,6 +1,5 @@
 package com.example.myapplication.mvvm.repositories
 
-import androidx.lifecycle.MutableLiveData
 import com.example.myapplication.data.datasources.LocalDataSource
 import com.example.myapplication.data.model.Product
 import com.example.myapplication.data.model.StoreData
@@ -16,7 +15,7 @@ class StoreRepository(private val localDataSource: LocalDataSource) {
     suspend fun addProductToCart(product: Product): StoreData {
         val newList: MutableList<Product> = mutableListOf()
         newList.addAll(_cart)
-        newList.firstOrNull{it.id == product.id}?.increaseAmount() ?: newList.add(product.increaseAmount())
+        newList.firstOrNull{it.id == product.id}?.increaseAmount() ?: newList.add(if(product.amount == 0) product.increaseAmount() else product)
         updateCartProducts(newList)
         updateTotalPrice()
         return storeData

@@ -58,6 +58,26 @@ class MVVMViewModelTest {
         storeData = StoreData(LocalDataSource.getStoreProducts(), emptyList(), 0.0)
     }
 
+    @Test
+    fun lastFragmentInitalValueTest() {
+        // GIVEN
+
+        // WHEN
+        val value = mvvmViewModel.lastFragment
+        // THEN
+        assertEquals(MVVMViewModel.FragmentType.STORE, value)
+    }
+
+    @Test
+    fun lastFragmentSetValueTest() {
+        // GIVEN
+        mvvmViewModel.lastFragment = MVVMViewModel.FragmentType.BOTH
+        // WHEN
+        val value = mvvmViewModel.lastFragment
+        // THEN
+        assertEquals(MVVMViewModel.FragmentType.BOTH, value)
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun getProductsTest() = runTest {
