@@ -18,6 +18,7 @@ class ModuleProvider(private val context: Context) {
     private val persistenceModules = module {
         single { context }
         single { Gson() }
+        single { context.getSharedPreferences(this.javaClass.name, Context.MODE_PRIVATE) }
         single { LocalDataSource(get(),get()) }
     }
 

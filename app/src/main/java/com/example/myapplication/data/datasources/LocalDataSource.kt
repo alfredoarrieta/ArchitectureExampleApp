@@ -1,15 +1,13 @@
 package com.example.myapplication.data.datasources
 
-import android.content.Context
 import android.content.SharedPreferences
 import com.example.myapplication.data.model.Product
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class LocalDataSource(private val context: Context, private val gson: Gson) {
+class LocalDataSource(private val gson: Gson, private val sharedPreferences: SharedPreferences) {
 
     private val cartProductsKey = "CART_PRODUCTS"
-    private val sharedPreferences: SharedPreferences = context.getSharedPreferences(this.javaClass.name, Context.MODE_PRIVATE)
 
     companion object {
         fun getStoreProducts(): List<Product> {
