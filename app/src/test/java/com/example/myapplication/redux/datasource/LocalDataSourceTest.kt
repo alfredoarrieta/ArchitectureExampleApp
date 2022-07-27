@@ -9,6 +9,7 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.internal.verification.Times
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 
@@ -19,6 +20,8 @@ class LocalDataSourceTest {
     private lateinit var mockedSharedPreferences: SharedPreferences
     private lateinit var mockedSharedPreferencesEditor: SharedPreferences.Editor
     lateinit var product: Product
+
+    val testJsonModel = "[{\"id\":\"id-0\",\"name\":\"meat\",\"price\":6.95,\"image\":\"https://embed.widencdn.net/img/beef/melpznnl7q/800x600px/Top%20Sirloin%20Steak.psd?keep\\u003dc\\u0026u\\u003d7fueml\",\"amount\":1}]"
 
     @Before
     fun setup() {
@@ -80,30 +83,33 @@ class LocalDataSourceTest {
     @Test
     fun getCartProductsNullTest() {
         // GIVEN
-        whenever(mockedSharedPreferences.getString(any(), any())).thenReturn(null)
+        whenever(mockedSharedPreferences.getString("CART_PRODUCTS", null)).thenReturn(null)
         // WHEN
         val result = localDataSource.getCartProducts()
         // THEN
+        Mockito.verify(mockedSharedPreferences, Times(1)).getString(any(), eq(null))
         assertEquals(0, result.size)
     }
 
     @Test
     fun getCartProductsEmptyTest() {
         // GIVEN
-        whenever(mockedSharedPreferences.getString(any(), any())).thenReturn("")
+        whenever(mockedSharedPreferences.getString("CART_PRODUCTS", null)).thenReturn("")
         // WHEN
         val result = localDataSource.getCartProducts()
         // THEN
+        Mockito.verify(mockedSharedPreferences, Times(1)).getString(any(), eq(null))
         assertEquals(0, result.size)
     }
 
     @Test
-    fun getCartProductsOtherContentTest() {
+    fun getCartProductsValidContentTest() {
         // GIVEN
-        whenever(mockedSharedPreferences.getString(any(), any())).thenReturn(" this is a test string ")
+        whenever(mockedSharedPreferences.getString("CART_PRODUCTS", null)).thenReturn(testJsonModel)
         // WHEN
         val result = localDataSource.getCartProducts()
         // THEN
-        assertEquals(0, result.size)
+        Mockito.verify(mockedSharedPreferences, Times(1)).getString(any(), eq(null))
+        assertEquals(1, result.size)
     }
 }
