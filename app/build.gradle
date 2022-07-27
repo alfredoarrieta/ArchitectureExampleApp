@@ -124,16 +124,25 @@ tasks.withType(Test) {
     jacoco.excludes = ['jdk.internal.*']
 }
 
-def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*',
-                  '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*', '**/fragments/*', '**/adapters/*',
-                  '**/activities/*', '**/animations/*']
+def fileFilter = [
+        '**/R.class',
+        '**/R$*.class',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        '**/*Test*.*',
+        'android/**/*.*',
+        '**/fragments/*',
+        '**/adapters/*',
+        '**/activities/*',
+        '**/animations/*'
+]
 def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
 def mainSrc = "$project.projectDir/src/main/java"
 
 task jacocoTestReport(type: JacocoReport) {
     dependsOn = ['testDebugUnitTest', 'createDebugCoverageReport']
     reports {
-        xml.enabled = false
+        xml.enabled = true
         html.enabled = true
     }
 
