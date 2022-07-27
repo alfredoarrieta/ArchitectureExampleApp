@@ -1,10 +1,11 @@
-package com.example.myapplication
+package com.example.myapplication.common.views
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
+import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityEnteringBinding
 import com.example.myapplication.mvvm.activities.MVVMActivity
 import com.example.myapplication.redux.activities.ReduxActivity
@@ -44,6 +45,6 @@ class EnteringActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 }
