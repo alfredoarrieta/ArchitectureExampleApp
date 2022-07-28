@@ -39,7 +39,7 @@ class AppStoreTest {
         // WHEN
         appStore.dispatch(testAction)
         // THEN
-        Mockito.verify(mockedEpic, Times(1)).actionReceived(eq(testAction), any())
+        Mockito.verify(mockedEpic, Times(2)).actionReceived(eq(testAction), any())
         Mockito.verify(mockedReducer, Times(1)).reduce(eq(testAction), any())
         assertEquals(testAppState, appStore.getState())
     }
