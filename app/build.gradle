@@ -5,6 +5,8 @@ plugins {
     id 'jacoco'
 }
 
+apply from: '../ktlint.gradle'
+
 android {
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
@@ -48,6 +50,8 @@ android {
         unitTests.returnDefaultValues = true
     }
 }
+
+check.dependsOn ktlint
 
 def nav_version = "2.5.0"
 def j_unit_version = "4.13.2"

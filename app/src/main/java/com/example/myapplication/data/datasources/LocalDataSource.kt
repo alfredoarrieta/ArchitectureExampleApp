@@ -112,7 +112,8 @@ class LocalDataSource(private val gson: Gson, private val sharedPreferences: Sha
     fun getCartProducts(): List<Product>{
         var products = listOf<Product>()
         sharedPreferences.getString(cartProductsKey, null)?.let{
-            products = gson.fromJson(it, object: TypeToken<List<Product>>() {}.type) ?: emptyList()
+            products = gson.fromJson(it, object: TypeToken<List<Product>>() {}.type)
+                ?: emptyList()
         }
         return products
     }
