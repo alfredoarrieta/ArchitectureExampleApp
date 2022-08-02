@@ -17,5 +17,4 @@ jobs:
         uses: alaegin/Detekt-Action@v1.21.0-RC2
         with:
           github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
           detekt_config: detekt-config.yml
