@@ -25,7 +25,7 @@ class ReduxStoreFragment : ReduxFragment() {
     private val animationsProvider: AnimationsProvider by inject()
     private val animationHandler = Handler(Looper.getMainLooper())
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentStoreBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -33,22 +33,22 @@ class ReduxStoreFragment : ReduxFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        appStore.dispatch(StoreActions.GetStoreProductsEpic(object : StoreActions.StoreProductsInterface {
-            override fun onProductsFetched(products: List<Product>) {
-                binding.productList.layoutManager = GridLayoutManager(context, 2)
-                binding.productList.adapter = ReduxProductAdapter(products, object : ReduxStoreProductInterface {
-                    override fun onProductAdded(product: Product) {
-                        appStore.dispatch(CartActions.AddProductToCart(product))
-                        startSlidingViewAnimation()
-                    }
-                })
-            }
-        }))
+        appStore.dispatch(StoreActions.GetStoreProducts())
 
         subscriptions.add(appStore.getObservableState().subscribe{ state ->
+
+            binding.productList.layoutManager = GridLayoutManager(context, 2)
+            binding.productList.adapter = ReduxProductAdapter(state.storeState.products, object : ReduxStoreProductInterface {
+                override fun onProductAdded(product: Product) {
+                    appStore.dispatch(CartActions.AddProductToCart(product))
+                    startSlidingViewAnimation()
+                }
+            })
+
             binding.body.text = HtmlCompat.fromHtml(String.format("<b>Cart total is:</b> $%.2f",state.cartState.cartTotal), HtmlCompat.FROM_HTML_MODE_LEGACY)
             (binding.productList.adapter as ReduxProductAdapter).updateProducts(state.cartState.products)
             binding.productList.adapter?.notifyDataSetChanged()
+
         })
 
         binding.slidingView.post { binding.slidingView.translationX = binding.slidingView.width.toFloat() }

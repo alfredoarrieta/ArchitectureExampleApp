@@ -5,10 +5,10 @@ import com.example.myapplication.data.model.Product
 import com.example.myapplication.redux.implementation.AppStore
 import com.example.myapplication.redux.implementation.actions.StoreActions
 import com.example.myapplication.redux.implementation.epics.StoreEpic
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.any
 import org.mockito.kotlin.times
 import org.mockito.kotlin.whenever
 
@@ -36,20 +36,14 @@ class StoreEpicTest {
     fun getStoreProductsTest() {
         // GIVEN
         val products = listOf(product)
-        var returnedProducts = emptyList<Product>()
-        val onStoreProductsFetched = object: StoreActions.StoreProductsInterface{
-            override fun onProductsFetched(products: List<Product>) {
-                returnedProducts = products
-            }
-        }
         whenever(mockedLocalDataSource.getStoreProducts()).thenReturn(products)
         // WHEN
         storeEpic.actionReceived(
-            StoreActions.GetStoreProductsEpic(onStoreProductsFetched),
+            StoreActions.GetStoreProducts(),
             mockedStore
         )
         // THEN
         Mockito.verify(mockedLocalDataSource, times(1)).getStoreProducts()
-        assertEquals(products, returnedProducts)
+        Mockito.verify(mockedStore, times(1)).dispatch(any<StoreActions.SetStoreProducts>())
     }
 }

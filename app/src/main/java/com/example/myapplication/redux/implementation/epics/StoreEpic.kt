@@ -7,10 +7,10 @@ import com.example.myapplication.redux.implementation.actions.StoreActions
 
 class StoreEpic(private val localDataSource: LocalDataSource): BaseEpic() {
 
-    override fun actionReceived(action: ReduxAction, store: AppStore) {
+    override fun actionReceived(action: ReduxAction, appStore: AppStore) {
         when(action){
-            is StoreActions.GetStoreProductsEpic -> {
-                action.callback.onProductsFetched(localDataSource.getStoreProducts())
+            is StoreActions.GetStoreProducts -> {
+                appStore.dispatch(StoreActions.SetStoreProducts(localDataSource.getStoreProducts()))
             }
         }
     }
