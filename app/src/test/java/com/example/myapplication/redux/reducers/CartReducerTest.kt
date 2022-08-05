@@ -35,10 +35,29 @@ class CartReducerTest {
     }
 
     @Test
-    fun setProductsTest() {
+    fun setProductsEmptyCartTest() {
         // GIVEN
         val products = listOf(product)
         val cartState = CartState()
+        val appState = AppState(cartState = cartState)
+        // WHEN
+        val resultAppState = cartReducer.reduce(
+            CartActions.SetCartProducts(products),
+            appState
+        )
+        // THEN
+        with(resultAppState.cartState) {
+            assertEquals(1, this.products.size)
+            assertEquals(products, this.products)
+            assertEquals(6.95, cartTotal, 0.0)
+        }
+    }
+
+    @Test
+    fun setProductsTest() {
+        // GIVEN
+        val products = listOf(product)
+        val cartState = CartState(products = listOf(product2), cartTotal = 3.05)
         val appState = AppState(cartState = cartState)
         // WHEN
         val resultAppState = cartReducer.reduce(
