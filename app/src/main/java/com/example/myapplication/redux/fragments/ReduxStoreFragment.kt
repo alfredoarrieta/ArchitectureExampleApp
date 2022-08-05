@@ -25,7 +25,11 @@ class ReduxStoreFragment : ReduxFragment() {
     private val animationsProvider: AnimationsProvider by inject()
     private val animationHandler = Handler(Looper.getMainLooper())
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentStoreBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -35,49 +39,74 @@ class ReduxStoreFragment : ReduxFragment() {
 
         appStore.dispatch(StoreActions.GetStoreProducts())
 
-        subscriptions.add(appStore.getObservableState().subscribe{ state ->
+        subscriptions.add(
+            appStore.getObservableState().subscribe { state ->
 
-            binding.productList.layoutManager = GridLayoutManager(context, 2)
-            binding.productList.adapter = ReduxProductAdapter(state.storeState.products, object : ReduxStoreProductInterface {
-                override fun onProductAdded(product: Product) {
-                    appStore.dispatch(CartActions.AddProductToCart(product))
-                    startSlidingViewAnimation()
-                }
-            })
+                binding.productList.layoutManager = GridLayoutManager(context, 2)
+                binding.productList.adapter = ReduxProductAdapter(
+                    state.storeState.products,
+                    object : ReduxStoreProductInterface {
+                        override fun onProductAdded(product: Product) {
+                            appStore.dispatch(CartActions.AddProductToCart(product))
+                            startSlidingViewAnimation()
+                        }
+                    }
+                )
 
-            binding.body.text = HtmlCompat.fromHtml(String.format("<b>Cart total is:</b> $%.2f",state.cartState.cartTotal), HtmlCompat.FROM_HTML_MODE_LEGACY)
-            (binding.productList.adapter as ReduxProductAdapter).updateProducts(state.cartState.products)
-            binding.productList.adapter?.notifyDataSetChanged()
+                binding.body.text = HtmlCompat.fromHtml(
+                    String.format(
+                        "<b>Cart total is:</b> $%.2f",
+                        state.cartState.cartTotal
+                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                (binding.productList.adapter as ReduxProductAdapter).updateProducts(state.cartState.products)
+                binding.productList.adapter?.notifyDataSetChanged()
+            }
+        )
 
-        })
-
-        binding.slidingView.post { binding.slidingView.translationX = binding.slidingView.width.toFloat() }
+        binding.slidingView.post {
+            binding.slidingView.translationX = binding.slidingView.width.toFloat()
+        }
     }
 
     private fun startSlidingViewAnimation() {
         animationsProvider.startLeftSlidingViewAnimation(binding.slidingView)
         animationHandler.removeCallbacksAndMessages(null)
-        animationHandler.postDelayed({ animationsProvider.finishLeftSlidingViewAnimation(binding.slidingView) },3000)
+        animationHandler.postDelayed(
+            { animationsProvider.finishLeftSlidingViewAnimation(binding.slidingView) },
+            3000
+        )
     }
 }
 
-interface ReduxStoreProductInterface{
+interface ReduxStoreProductInterface {
     fun onProductAdded(product: Product)
 }
 
-class ReduxProductViewHolder(private val binding: ItemStoreProductBinding): RecyclerView.ViewHolder(binding.root) {
-    fun bind(product: Product, callback: ReduxStoreProductInterface){
-        Picasso.get().load(product.image).resize(100,120).placeholder(R.drawable.ic_android).into(binding.image)
+class ReduxProductViewHolder(private val binding: ItemStoreProductBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+    fun bind(product: Product, callback: ReduxStoreProductInterface) {
+        Picasso.get().load(product.image).resize(100, 120).placeholder(R.drawable.ic_android)
+            .into(binding.image)
         binding.name.text = product.name
         binding.price.text = "$${product.price}"
-        binding.addButton.text = if(product.amount == 0) "Add" else product.amount.toString()
+        binding.addButton.text = if (product.amount == 0) "Add" else product.amount.toString()
         binding.addButton.setOnClickListener { callback.onProductAdded(product) }
     }
 }
 
-class ReduxProductAdapter(private var products: List<Product>, private val callback: ReduxStoreProductInterface) : RecyclerView.Adapter<ReduxProductViewHolder>() {
+class ReduxProductAdapter(
+    private var products: List<Product>,
+    private val callback: ReduxStoreProductInterface
+) : RecyclerView.Adapter<ReduxProductViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReduxProductViewHolder {
-        return ReduxProductViewHolder(ItemStoreProductBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return ReduxProductViewHolder(
+            ItemStoreProductBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: ReduxProductViewHolder, position: Int) {
@@ -90,7 +119,7 @@ class ReduxProductAdapter(private var products: List<Product>, private val callb
 
     fun updateProducts(products: List<Product>?) {
         products?.forEach { cartProduct ->
-            this.products.firstOrNull { it.id == cartProduct.id }?.let{
+            this.products.firstOrNull { it.id == cartProduct.id }?.let {
                 it.amount = cartProduct.amount
             }
         }
