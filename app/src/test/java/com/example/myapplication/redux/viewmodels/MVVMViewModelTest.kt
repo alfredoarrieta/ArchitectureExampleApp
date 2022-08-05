@@ -6,6 +6,7 @@ import com.example.myapplication.data.model.Product
 import com.example.myapplication.data.model.StoreData
 import com.example.myapplication.mvvm.repositories.StoreRepository
 import com.example.myapplication.mvvm.viemodels.MVVMViewModel
+import com.example.myapplication.redux.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
@@ -13,6 +14,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,6 +23,7 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.mockito.Mockito
 import org.mockito.kotlin.whenever
+import java.lang.Thread.sleep
 
 class MVVMViewModelTest {
 
@@ -87,7 +90,9 @@ class MVVMViewModelTest {
         // WHEN
         mvvmViewModel.getProducts()
         // THEN
-        mvvmViewModel.onDataChanged.observeForever {
+        sleep(1000)
+        assertNotEquals(null, mvvmViewModel.onDataChanged.value)
+        mvvmViewModel.onDataChanged.value?.let {
             assertEquals(10, it.products.size)
             assertEquals(1.0, it.cartTotal, 0.0)
         }
@@ -102,10 +107,14 @@ class MVVMViewModelTest {
         // WHEN
         mvvmViewModel.addProductToCart(product)
         // THEN
-        mvvmViewModel.onDataChanged.observeForever {
+        mvvmViewModel.onDataChanged.getOrAwaitValue()
+
+        assertNotEquals(null, mvvmViewModel.onDataChanged.value)
+        mvvmViewModel.onDataChanged.value?.let {
             assertEquals(10, it.products.size)
             assertEquals(2.0, it.cartTotal, 0.0)
         }
+
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

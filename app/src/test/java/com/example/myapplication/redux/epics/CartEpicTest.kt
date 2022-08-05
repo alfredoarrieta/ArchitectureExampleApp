@@ -50,6 +50,8 @@ class CartEpicTest {
             mockedStore
         )
         // THEN
+        Mockito.verify(mockedStore, times(1)).getState()
+        Mockito.verify(mockedAppState, times(1)).cartState
         Mockito.verify(mockedLocalDataSource, times(1)).saveCartProducts(products)
     }
 
@@ -66,6 +68,8 @@ class CartEpicTest {
             mockedStore
         )
         // THEN
+        Mockito.verify(mockedStore, times(1)).getState()
+        Mockito.verify(mockedAppState, times(1)).cartState
         Mockito.verify(mockedLocalDataSource, times(1)).saveCartProducts(products)
     }
 
@@ -81,6 +85,6 @@ class CartEpicTest {
         )
         // THEN
         Mockito.verify(mockedLocalDataSource, times(1)).getCartProducts()
-        Mockito.verify(mockedStore, times(1)).dispatch(any())
+        Mockito.verify(mockedStore, times(1)).dispatch(any<CartActions.SetCartProducts>())
     }
 }
