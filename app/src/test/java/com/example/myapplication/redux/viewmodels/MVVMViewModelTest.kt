@@ -6,7 +6,7 @@ import com.example.myapplication.data.model.Product
 import com.example.myapplication.data.model.StoreData
 import com.example.myapplication.mvvm.repositories.StoreRepository
 import com.example.myapplication.mvvm.viemodels.MVVMViewModel
-import com.example.myapplication.redux.getOrAwaitValue
+import com.example.myapplication.redux.extensions.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
@@ -23,7 +23,6 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.mockito.Mockito
 import org.mockito.kotlin.whenever
-import java.lang.Thread.sleep
 
 class MVVMViewModelTest {
 
@@ -90,7 +89,7 @@ class MVVMViewModelTest {
         // WHEN
         mvvmViewModel.getProducts()
         // THEN
-        sleep(1000)
+        mvvmViewModel.onDataChanged.getOrAwaitValue()
         assertNotEquals(null, mvvmViewModel.onDataChanged.value)
         mvvmViewModel.onDataChanged.value?.let {
             assertEquals(10, it.products.size)
@@ -132,6 +131,7 @@ class MVVMViewModelTest {
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun finish() {
         Dispatchers.resetMain()

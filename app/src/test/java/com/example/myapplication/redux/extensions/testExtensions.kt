@@ -1,4 +1,4 @@
-package com.example.myapplication.redux
+package com.example.myapplication.redux.extensions
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
