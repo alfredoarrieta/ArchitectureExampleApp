@@ -56,16 +56,19 @@ class ReduxStoreFragment : ReduxFragment() {
             )
         )
 
-        subscriptions.add(appStore.getObservableState().subscribe { state ->
-            binding.body.text = HtmlCompat.fromHtml(
-                String.format(
-                    "<b>Cart total is:</b> $%.2f",
-                    state.cartState.cartTotal
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
-            (binding.productList.adapter as ReduxProductAdapter).updateProducts(state.cartState.products)
-            binding.productList.adapter?.notifyDataSetChanged()
-        })
+        subscriptions.add(
+            appStore.getObservableState().subscribe { state ->
+                binding.body.text = HtmlCompat.fromHtml(
+                    String.format(
+                        "<b>Cart total is:</b> $%.2f",
+                        state.cartState.cartTotal
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+                (binding.productList.adapter as ReduxProductAdapter).updateProducts(state.cartState.products)
+                binding.productList.adapter?.notifyDataSetChanged()
+            }
+        )
 
         binding.slidingView.post {
             binding.slidingView.translationX = binding.slidingView.width.toFloat()
