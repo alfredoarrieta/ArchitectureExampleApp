@@ -29,7 +29,7 @@ class ReduxStoreFragment : ReduxFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentStoreBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -37,19 +37,24 @@ class ReduxStoreFragment : ReduxFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        appStore.dispatch(StoreActions.GetStoreProductsEpic(object :
-            StoreActions.StoreProductsInterface {
-            override fun onProductsFetched(products: List<Product>) {
-                binding.productList.layoutManager = GridLayoutManager(context, 2)
-                binding.productList.adapter =
-                    ReduxProductAdapter(products, object : ReduxStoreProductInterface {
-                        override fun onProductAdded(product: Product) {
-                            appStore.dispatch(CartActions.AddProductToCart(product))
-                            startSlidingViewAnimation()
-                        }
-                    })
-            }
-        }))
+        appStore.dispatch(
+            StoreActions.GetStoreProductsEpic(
+                object : StoreActions.StoreProductsInterface {
+                    override fun onProductsFetched(products: List<Product>) {
+                        binding.productList.layoutManager = GridLayoutManager(context, 2)
+                        binding.productList.adapter = ReduxProductAdapter(
+                            products,
+                            object : ReduxStoreProductInterface {
+                                override fun onProductAdded(product: Product) {
+                                    appStore.dispatch(CartActions.AddProductToCart(product))
+                                    startSlidingViewAnimation()
+                                }
+                            }
+                        )
+                    }
+                }
+            )
+        )
 
         subscriptions.add(appStore.getObservableState().subscribe { state ->
             binding.body.text = HtmlCompat.fromHtml(

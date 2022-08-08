@@ -23,7 +23,7 @@ class ReduxCartFragment : ReduxFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCartBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -38,11 +38,13 @@ class ReduxCartFragment : ReduxFragment() {
             }
         })
 
-        subscriptions.add(appStore.getObservableState().subscribe { state ->
-            binding.checkoutButton.text =
-                String.format("Cart Total $%.2f", state.cartState.cartTotal)
-            (binding.productList.adapter as CartProductAdapter).setProducts(state.cartState.products)
-        })
+        subscriptions.add(
+            appStore.getObservableState().subscribe { state ->
+                binding.checkoutButton.text =
+                    String.format("Cart Total $%.2f", state.cartState.cartTotal)
+                (binding.productList.adapter as CartProductAdapter).setProducts(state.cartState.products)
+            }
+        )
     }
 
     fun entryAnimation() {

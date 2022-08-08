@@ -29,7 +29,7 @@ class MVVMStoreFragment : Fragment(), KoinComponent {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentStoreBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -39,7 +39,7 @@ class MVVMStoreFragment : Fragment(), KoinComponent {
 
         val viewModel: MVVMViewModel by activityViewModels()
 
-        viewModel.onDataChanged.observe(this, { data ->
+        viewModel.onDataChanged.observe(viewLifecycleOwner) { data ->
             binding.body.text = HtmlCompat.fromHtml(
                 String.format("<b>Cart total is:</b> $%.2f", data.cartTotal),
                 HtmlCompat.FROM_HTML_MODE_LEGACY
@@ -48,20 +48,22 @@ class MVVMStoreFragment : Fragment(), KoinComponent {
                 data.products,
                 data.cart
             )
-        })
+        }
 
         binding.slidingView.post {
             binding.slidingView.translationX = binding.slidingView.width.toFloat()
         }
 
         binding.productList.layoutManager = GridLayoutManager(context, 2)
-        binding.productList.adapter =
-            StoreProductAdapter(arrayListOf(), object : StoreProductInterface {
+        binding.productList.adapter = StoreProductAdapter(
+            arrayListOf(),
+            object : StoreProductInterface {
                 override fun onProductAdded(product: Product) {
                     viewModel.addProductToCart(product)
                     startSlidingViewAnimation()
                 }
-            })
+            }
+        )
 
         viewModel.getProducts()
     }
