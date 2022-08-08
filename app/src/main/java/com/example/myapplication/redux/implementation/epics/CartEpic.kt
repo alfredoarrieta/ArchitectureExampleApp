@@ -5,10 +5,10 @@ import com.example.myapplication.redux.implementation.AppStore
 import com.example.myapplication.redux.implementation.actions.CartActions
 import com.example.myapplication.redux.implementation.actions.ReduxAction
 
-class CartEpic(private val localDataSource: LocalDataSource): BaseEpic() {
+class CartEpic(private val localDataSource: LocalDataSource) : BaseEpic() {
 
     override fun actionReceived(action: ReduxAction, store: AppStore) {
-        when(action){
+        when (action) {
             is CartActions.AddProductToCart -> saveCartProducts(store)
             is CartActions.RemoveProductFromCart -> saveCartProducts(store)
             is CartActions.RestoreProductsFromCache -> getCartProducts(store)

@@ -17,7 +17,11 @@ class MVVMCartFragment : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentCartBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -28,7 +32,7 @@ class MVVMCartFragment : Fragment() {
         val viewModel: MVVMViewModel by activityViewModels()
 
         viewModel.onDataChanged.observe(this, { data ->
-            binding.checkoutButton.text = String.format("Cart Total $%.2f",data.cartTotal)
+            binding.checkoutButton.text = String.format("Cart Total $%.2f", data.cartTotal)
             (binding.productList.adapter as CartProductAdapter).setProducts(data.cart)
         })
 

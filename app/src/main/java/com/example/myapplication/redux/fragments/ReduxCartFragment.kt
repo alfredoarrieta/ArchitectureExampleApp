@@ -19,7 +19,11 @@ class ReduxCartFragment : ReduxFragment() {
     private val animationsProvider: AnimationsProvider by inject()
     private var entryAnimationPresented = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentCartBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -29,25 +33,35 @@ class ReduxCartFragment : ReduxFragment() {
 
         binding.productList.layoutManager = LinearLayoutManager(context)
         binding.productList.adapter = CartProductAdapter(object : CartProductInterface {
-            override fun onProductDeleted(product: Product) { appStore.dispatch(CartActions.RemoveProductFromCart(product)) }
+            override fun onProductDeleted(product: Product) {
+                appStore.dispatch(CartActions.RemoveProductFromCart(product))
+            }
         })
 
-        subscriptions.add(appStore.getObservableState().subscribe{ state ->
-            binding.checkoutButton.text = String.format("Cart Total $%.2f",state.cartState.cartTotal)
-            (binding.productList.adapter as CartProductAdapter).setProducts(state.cartState.products)
-        })
+        subscriptions.add(
+            appStore.getObservableState().subscribe { state ->
+                binding.checkoutButton.text =
+                    String.format("Cart Total $%.2f", state.cartState.cartTotal)
+                (binding.productList.adapter as CartProductAdapter).setProducts(state.cartState.products)
+            }
+        )
     }
 
-    fun entryAnimation(){
-        if(entryAnimationPresented.not()){
+    fun entryAnimation() {
+        if (entryAnimationPresented.not()) {
             binding.mainContainer.post { animationsProvider.entryBottomAnimation(binding.mainContainer) }
             entryAnimationPresented = true
         }
     }
 
-    fun exitAnimation(callback: AnimationsProvider.AnimationEndCallback){
-        if(entryAnimationPresented) {
-            binding.mainContainer.post { animationsProvider.exitBottomAnimation(binding.mainContainer,callback) }
+    fun exitAnimation(callback: AnimationsProvider.AnimationEndCallback) {
+        if (entryAnimationPresented) {
+            binding.mainContainer.post {
+                animationsProvider.exitBottomAnimation(
+                    binding.mainContainer,
+                    callback
+                )
+            }
             entryAnimationPresented = false
         } else {
             callback.onAnimationEnd()

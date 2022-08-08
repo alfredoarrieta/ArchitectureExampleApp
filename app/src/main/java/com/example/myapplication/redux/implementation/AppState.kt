@@ -9,6 +9,6 @@ data class AppState(
 
 data class NavigationState(val lastFragment: FragmentType = FragmentType.STORE)
 
-enum class FragmentType{ STORE, CART, ABOUT, BOTH }
+enum class FragmentType { STORE, CART, ABOUT, BOTH }
 
 data class CartState(val products: List<Product> = mutableListOf(), val cartTotal: Double = 0.0)

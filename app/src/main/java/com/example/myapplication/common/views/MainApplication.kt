@@ -4,7 +4,7 @@ import android.support.multidex.MultiDexApplication
 import com.example.myapplication.data.di.ModuleProvider
 import org.koin.core.context.startKoin
 
-class MainApplication: MultiDexApplication() {
+class MainApplication : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()

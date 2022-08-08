@@ -21,7 +21,7 @@ class AppStoreTest {
     private lateinit var appStore: AppStore
     private lateinit var mockedEpic: BaseEpic
     private lateinit var mockedReducer: BaseReducer
-    private val testAction: ReduxAction = object: ReduxAction() {}
+    private val testAction: ReduxAction = object : ReduxAction() {}
 
     @Before
     fun setup() {
