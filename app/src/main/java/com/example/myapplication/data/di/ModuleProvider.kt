@@ -20,14 +20,14 @@ class ModuleProvider(private val context: Context) {
         single { context }
         single { Gson() }
         single { context.getSharedPreferences(this.javaClass.name, Context.MODE_PRIVATE) }
-        single { LocalDataSource(get(),get()) }
+        single { LocalDataSource(get(), get()) }
     }
 
     private val mvvmModules = module {
         single { StoreRepository(get()) }
     }
 
-    private val reduxModules = module{
+    private val reduxModules = module {
         single {
             AppStore(
                 listOf(
@@ -43,11 +43,11 @@ class ModuleProvider(private val context: Context) {
         }
     }
 
-    private val animationModules = module{
+    private val animationModules = module {
         single { AnimationsProvider() }
     }
 
-    fun getModules(): List<Module>{
+    fun getModules(): List<Module> {
         return listOf(persistenceModules, reduxModules, mvvmModules, animationModules)
     }
 

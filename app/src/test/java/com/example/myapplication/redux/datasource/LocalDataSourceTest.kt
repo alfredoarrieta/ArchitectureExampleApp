@@ -21,7 +21,8 @@ class LocalDataSourceTest {
     private lateinit var mockedSharedPreferencesEditor: SharedPreferences.Editor
     lateinit var product: Product
 
-    val testJsonModel = "[{\"id\":\"id-0\",\"name\":\"meat\",\"price\":6.95,\"image\":\"https://embed.widencdn.net/img/beef/melpznnl7q/800x600px/Top%20Sirloin%20Steak.psd?keep\\u003dc\\u0026u\\u003d7fueml\",\"amount\":1}]"
+    val testJsonModel =
+        "[{\"id\":\"id-0\",\"name\":\"meat\",\"price\":6.95,\"image\":\"https://embed.widencdn.net/img/beef/melpznnl7q/800x600px/Top%20Sirloin%20Steak.psd?keep\\u003dc\\u0026u\\u003d7fueml\",\"amount\":1}]"
 
     @Before
     fun setup() {
@@ -59,7 +60,9 @@ class LocalDataSourceTest {
         // GIVEN
         val products = emptyList<Product>()
         whenever(mockedSharedPreferences.edit()).thenReturn(mockedSharedPreferencesEditor)
-        whenever(mockedSharedPreferencesEditor.putString(any(), any())).thenReturn(mockedSharedPreferencesEditor)
+        whenever(mockedSharedPreferencesEditor.putString(any(), any())).thenReturn(
+            mockedSharedPreferencesEditor
+        )
         // WHEN
         localDataSource.saveCartProducts(products)
         // THEN

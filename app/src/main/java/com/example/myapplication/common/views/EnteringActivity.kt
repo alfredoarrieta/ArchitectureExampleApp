@@ -20,8 +20,8 @@ class EnteringActivity : AppCompatActivity() {
         supportActionBar?.title = "Architecture Exercise"
 
         binding.tittle.text = HtmlCompat.fromHtml(
-                "This example was created by: <b>Alfredo Arrieta</b>" +
-                "<br><a href=\"https://www.linkedin.com/in/alfredo-josé-arrieta-bawab-85908996/\">linkedIn</br>",
+            "This example was created by: <b>Alfredo Arrieta</b>" +
+                    "<br><a href=\"https://www.linkedin.com/in/alfredo-josé-arrieta-bawab-85908996/\">linkedIn</br>",
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         binding.tittle.movementMethod = LinkMovementMethod.getInstance()

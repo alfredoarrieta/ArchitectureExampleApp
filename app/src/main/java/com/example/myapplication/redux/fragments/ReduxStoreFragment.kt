@@ -41,7 +41,6 @@ class ReduxStoreFragment : ReduxFragment() {
 
         subscriptions.add(
             appStore.getObservableState().subscribe { state ->
-
                 binding.productList.layoutManager = GridLayoutManager(context, 2)
                 binding.productList.adapter = ReduxProductAdapter(
                     state.storeState.products,
@@ -52,12 +51,12 @@ class ReduxStoreFragment : ReduxFragment() {
                         }
                     }
                 )
-
                 binding.body.text = HtmlCompat.fromHtml(
                     String.format(
                         "<b>Cart total is:</b> $%.2f",
                         state.cartState.cartTotal
-                    ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                    ),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
                 )
                 (binding.productList.adapter as ReduxProductAdapter).updateProducts(state.cartState.products)
                 binding.productList.adapter?.notifyDataSetChanged()

@@ -100,8 +100,8 @@ class LocalDataSource(private val gson: Gson, private val sharedPreferences: Sha
         return LocalDataSource.getStoreProducts()
     }
 
-    fun saveCartProducts(products: List<Product>){
-        if(products.isNotEmpty()){
+    fun saveCartProducts(products: List<Product>) {
+        if (products.isNotEmpty()) {
             sharedPreferences.edit().apply {
                 putString(cartProductsKey, gson.toJson(products))
                 apply()
@@ -109,10 +109,10 @@ class LocalDataSource(private val gson: Gson, private val sharedPreferences: Sha
         }
     }
 
-    fun getCartProducts(): List<Product>{
+    fun getCartProducts(): List<Product> {
         var products = listOf<Product>()
-        sharedPreferences.getString(cartProductsKey, null)?.let{
-            products = gson.fromJson(it, object: TypeToken<List<Product>>() {}.type)
+        sharedPreferences.getString(cartProductsKey, null)?.let {
+            products = gson.fromJson(it, object : TypeToken<List<Product>>() {}.type)
                 ?: emptyList()
         }
         return products
