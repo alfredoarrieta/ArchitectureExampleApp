@@ -37,7 +37,7 @@ class StoreEpicTest {
         // GIVEN
         val products = listOf(product)
         var returnedProducts = emptyList<Product>()
-        val onStoreProductsFetched = object: StoreActions.StoreProductsInterface{
+        val onStoreProductsFetched = object : StoreActions.StoreProductsInterface {
             override fun onProductsFetched(products: List<Product>) {
                 returnedProducts = products
             }

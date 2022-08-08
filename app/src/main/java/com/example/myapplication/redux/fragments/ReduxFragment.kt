@@ -6,7 +6,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-abstract class ReduxFragment: Fragment(), KoinComponent {
+abstract class ReduxFragment : Fragment(), KoinComponent {
 
     val appStore: AppStore by inject()
 

@@ -7,20 +7,20 @@ import android.view.View
 class AnimationsProvider {
 
     fun startLeftSlidingViewAnimation(view: View) {
-        ObjectAnimator.ofFloat(view, "translationX", 0F).apply{
+        ObjectAnimator.ofFloat(view, "translationX", 0F).apply {
             duration = 750
             start()
         }
     }
 
-    fun finishLeftSlidingViewAnimation(view: View){
+    fun finishLeftSlidingViewAnimation(view: View) {
         ObjectAnimator.ofFloat(view, "translationX", view.width.toFloat()).apply {
             duration = 500
             start()
         }
     }
 
-    fun entryBottomAnimation(view: View){
+    fun entryBottomAnimation(view: View) {
         view.translationY = view.rootView.height.toFloat()
         ObjectAnimator.ofFloat(
             view,
@@ -29,15 +29,16 @@ class AnimationsProvider {
         ).setDuration(750).start()
     }
 
-    fun exitBottomAnimation(view: View, callback: AnimationEndCallback?){
+    fun exitBottomAnimation(view: View, callback: AnimationEndCallback?) {
         ObjectAnimator.ofFloat(view, "translationY", view.rootView.height.toFloat())
             .apply {
                 duration = 750
-                addListener(object: Animator.AnimatorListener{
+                addListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animation: Animator?) {}
                     override fun onAnimationEnd(animation: Animator?) {
                         callback?.onAnimationEnd()
                     }
+
                     override fun onAnimationCancel(animation: Animator?) {}
                     override fun onAnimationRepeat(animation: Animator?) {}
                 })
@@ -45,7 +46,7 @@ class AnimationsProvider {
             }
     }
 
-    fun entryRightAnimation(view: View){
+    fun entryRightAnimation(view: View) {
         view.translationX = view.rootView.width.toFloat()
         ObjectAnimator.ofFloat(
             view,
@@ -54,15 +55,16 @@ class AnimationsProvider {
         ).setDuration(750).start()
     }
 
-    fun exitRightAnimation(view: View, callback: AnimationEndCallback?){
+    fun exitRightAnimation(view: View, callback: AnimationEndCallback?) {
         ObjectAnimator.ofFloat(view, "translationX", view.rootView.width.toFloat())
             .apply {
                 duration = 750
-                addListener(object: Animator.AnimatorListener{
+                addListener(object : Animator.AnimatorListener {
                     override fun onAnimationStart(animation: Animator?) {}
                     override fun onAnimationEnd(animation: Animator?) {
                         callback?.onAnimationEnd()
                     }
+
                     override fun onAnimationCancel(animation: Animator?) {}
                     override fun onAnimationRepeat(animation: Animator?) {}
                 })
@@ -70,7 +72,7 @@ class AnimationsProvider {
             }
     }
 
-    interface AnimationEndCallback{
+    interface AnimationEndCallback {
         fun onAnimationEnd()
     }
 }

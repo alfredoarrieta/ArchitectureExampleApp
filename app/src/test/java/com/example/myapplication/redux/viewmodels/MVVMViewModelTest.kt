@@ -98,7 +98,11 @@ class MVVMViewModelTest {
     fun addProductToCartTest() = runTest {
         Dispatchers.setMain(Dispatchers.IO)
         // GIVEN
-        whenever(mockedStoreRepository.addProductToCart(product)).thenReturn(storeData.copy(cartTotal = 2.0))
+        whenever(mockedStoreRepository.addProductToCart(product)).thenReturn(
+            storeData.copy(
+                cartTotal = 2.0
+            )
+        )
         // WHEN
         mvvmViewModel.addProductToCart(product)
         // THEN
@@ -113,7 +117,11 @@ class MVVMViewModelTest {
     fun removeProductFromCartTest() = runTest {
         Dispatchers.setMain(Dispatchers.IO)
         // GIVEN
-        whenever(mockedStoreRepository.removeProductFromCart(product)).thenReturn(storeData.copy(cartTotal = 3.0))
+        whenever(mockedStoreRepository.removeProductFromCart(product)).thenReturn(
+            storeData.copy(
+                cartTotal = 3.0
+            )
+        )
         // WHEN
         mvvmViewModel.removeProductFromCart(product)
         // THEN

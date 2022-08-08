@@ -8,7 +8,8 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import org.koin.core.component.KoinComponent
 
-class AppStore(private val epics: List<BaseEpic>, private val reducers: List<BaseReducer>): KoinComponent {
+class AppStore(private val epics: List<BaseEpic>, private val reducers: List<BaseReducer>) :
+    KoinComponent {
 
     private val state = BehaviorSubject.create<AppState>()
 
@@ -16,7 +17,7 @@ class AppStore(private val epics: List<BaseEpic>, private val reducers: List<Bas
         state.onNext(AppState())
     }
 
-    fun getState(): AppState{
+    fun getState(): AppState {
         return state.value
     }
 
@@ -24,10 +25,12 @@ class AppStore(private val epics: List<BaseEpic>, private val reducers: List<Bas
         return state.observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun dispatch(action: ReduxAction){
+    fun dispatch(action: ReduxAction) {
         reducers.forEach { reducer ->
             val newSate = reducer.reduce(action, state.value)
-            if(state.value != newSate){ state.onNext(newSate) }
+            if (state.value != newSate) {
+                state.onNext(newSate)
+            }
         }
         epics.forEach { it.actionReceived(action, this) }
     }

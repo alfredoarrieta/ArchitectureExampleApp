@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class MVVMViewModel: ViewModel(), KoinComponent {
+class MVVMViewModel : ViewModel(), KoinComponent {
 
     private val storeRepository: StoreRepository by inject()
 
@@ -20,7 +20,7 @@ class MVVMViewModel: ViewModel(), KoinComponent {
     private val _onDataChanged: MutableLiveData<StoreData> = MutableLiveData()
     val onDataChanged: LiveData<StoreData> = _onDataChanged
 
-    enum class FragmentType{ STORE, CART, ABOUT, BOTH }
+    enum class FragmentType { STORE, CART, ABOUT, BOTH }
 
     fun getProducts() {
         viewModelScope.launch {
@@ -28,13 +28,13 @@ class MVVMViewModel: ViewModel(), KoinComponent {
         }
     }
 
-    fun addProductToCart(product: Product){
+    fun addProductToCart(product: Product) {
         viewModelScope.launch {
             _onDataChanged.postValue(storeRepository.addProductToCart(product))
         }
     }
 
-    fun removeProductFromCart(product: Product){
+    fun removeProductFromCart(product: Product) {
         viewModelScope.launch {
             _onDataChanged.postValue(storeRepository.removeProductFromCart(product))
         }

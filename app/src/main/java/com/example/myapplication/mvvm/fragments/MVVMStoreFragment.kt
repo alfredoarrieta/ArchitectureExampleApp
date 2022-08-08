@@ -15,7 +15,6 @@ import com.example.myapplication.adapters.StoreProductInterface
 import com.example.myapplication.animations.AnimationsProvider
 import com.example.myapplication.data.model.Product
 import com.example.myapplication.databinding.FragmentStoreBinding
-import com.example.myapplication.mvvm.repositories.StoreRepository
 import com.example.myapplication.mvvm.viemodels.MVVMViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -26,7 +25,11 @@ class MVVMStoreFragment : Fragment(), KoinComponent {
     private val animationsProvider: AnimationsProvider by inject()
     private val animationHandler = Handler(Looper.getMainLooper())
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentStoreBinding.inflate(layoutInflater)
         return binding.root
     }
@@ -37,19 +40,28 @@ class MVVMStoreFragment : Fragment(), KoinComponent {
         val viewModel: MVVMViewModel by activityViewModels()
 
         viewModel.onDataChanged.observe(this, { data ->
-            binding.body.text = HtmlCompat.fromHtml(String.format("<b>Cart total is:</b> $%.2f",data.cartTotal), HtmlCompat.FROM_HTML_MODE_LEGACY)
-            (binding.productList.adapter as StoreProductAdapter).updateProducts(data.products, data.cart)
+            binding.body.text = HtmlCompat.fromHtml(
+                String.format("<b>Cart total is:</b> $%.2f", data.cartTotal),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+            (binding.productList.adapter as StoreProductAdapter).updateProducts(
+                data.products,
+                data.cart
+            )
         })
 
-        binding.slidingView.post { binding.slidingView.translationX = binding.slidingView.width.toFloat() }
+        binding.slidingView.post {
+            binding.slidingView.translationX = binding.slidingView.width.toFloat()
+        }
 
         binding.productList.layoutManager = GridLayoutManager(context, 2)
-        binding.productList.adapter = StoreProductAdapter(arrayListOf(), object : StoreProductInterface {
-            override fun onProductAdded(product: Product) {
-                viewModel.addProductToCart(product)
-                startSlidingViewAnimation()
-            }
-        })
+        binding.productList.adapter =
+            StoreProductAdapter(arrayListOf(), object : StoreProductInterface {
+                override fun onProductAdded(product: Product) {
+                    viewModel.addProductToCart(product)
+                    startSlidingViewAnimation()
+                }
+            })
 
         viewModel.getProducts()
     }
@@ -57,6 +69,12 @@ class MVVMStoreFragment : Fragment(), KoinComponent {
     private fun startSlidingViewAnimation() {
         animationsProvider.startLeftSlidingViewAnimation(binding.slidingView)
         animationHandler.removeCallbacksAndMessages(null)
-        animationHandler.postDelayed({ binding.slidingView.let{ animationsProvider.finishLeftSlidingViewAnimation(binding.slidingView) } },3000)
+        animationHandler.postDelayed({
+            binding.slidingView.let {
+                animationsProvider.finishLeftSlidingViewAnimation(
+                    binding.slidingView
+                )
+            }
+        }, 3000)
     }
 }

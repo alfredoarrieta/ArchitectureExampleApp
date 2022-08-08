@@ -1,10 +1,9 @@
 package com.example.myapplication.redux.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-
 import com.example.myapplication.R
 import com.example.myapplication.animations.AnimationsProvider
 import com.example.myapplication.databinding.ActivityMainManualManagementBinding
@@ -53,7 +52,7 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
         }
 
         binding.tabBar.setOnItemSelectedListener { item ->
-            when(item.itemId){
+            when (item.itemId) {
                 R.id.store_redux -> goToStore()
                 R.id.cart_redux -> goToCart()
                 R.id.about_redux -> goToAbout()
@@ -63,7 +62,7 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == android.R.id.home){
+        if (item.itemId == android.R.id.home) {
             exitAnimationAndClose()
             return true
         }
@@ -75,9 +74,9 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
     }
 
     private fun exitAnimationAndClose() {
-        if(appStore.getState().navigationState.lastFragment != FragmentType.STORE) {
+        if (appStore.getState().navigationState.lastFragment != FragmentType.STORE) {
             binding.tabBar.selectedItemId = R.id.store_redux
-        }else {
+        } else {
             finish()
         }
     }
@@ -85,10 +84,14 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
     private fun goToStore(): Boolean {
         supportFragmentManager.commit {
             aboutFragment.exitAnimation(object : AnimationsProvider.AnimationEndCallback {
-                override fun onAnimationEnd() { hide(aboutFragment) }
+                override fun onAnimationEnd() {
+                    hide(aboutFragment)
+                }
             })
             cartFragment.exitAnimation(object : AnimationsProvider.AnimationEndCallback {
-                override fun onAnimationEnd() { hide(cartFragment) }
+                override fun onAnimationEnd() {
+                    hide(cartFragment)
+                }
             })
             appStore.dispatch(NavigationActions.SetLastFragment(FragmentType.STORE))
         }
@@ -99,7 +102,7 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
         supportFragmentManager.commit {
             show(cartFragment)
             cartFragment.entryAnimation()
-            aboutFragment.exitAnimation(object: AnimationsProvider.AnimationEndCallback {
+            aboutFragment.exitAnimation(object : AnimationsProvider.AnimationEndCallback {
                 override fun onAnimationEnd() {
                     hide(aboutFragment)
                     appStore.dispatch(NavigationActions.SetLastFragment(FragmentType.CART))
@@ -120,6 +123,6 @@ class ReduxActivity : AppCompatActivity(), KoinComponent {
 
     override fun onPause() {
         super.onPause()
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right)
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 }
