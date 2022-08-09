@@ -51,5 +51,4 @@ class StoreReducerTest {
             Assert.assertEquals(products, this.products)
         }
     }
-
 }
