@@ -117,7 +117,6 @@ class MVVMViewModelTest {
             assertEquals(10, it.products.size)
             assertEquals(2.0, it.cartTotal, 0.0)
         }
-
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
